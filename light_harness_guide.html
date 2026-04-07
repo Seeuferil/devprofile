@@ -350,44 +350,117 @@
     justify-content: space-between;
   }
 
+  /* ── 언어 토글 바 ── */
+  .lang-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250,250,248,0.96);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+  }
+  .lang-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .lang-btn.active { background: var(--purple); color: white; border-color: var(--purple); }
+
+  /* ── 언어 전환 ── */
+  [lang-ko], [lang-en] { display: none; }
+  body.lang-ko [lang-ko] { display: revert; }
+  body.lang-en [lang-en] { display: revert; }
+
+  /* ── 테이블 래퍼 ── */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* ── 모바일 ── */
+  @media (max-width: 640px) {
+    .page { padding: 20px 16px 48px; }
+    .doc-header h1 { font-size: 20px; }
+    .doc-header .subtitle { font-size: 13px; }
+    .doc-header .meta { flex-wrap: wrap; gap: 6px; }
+    h2 { font-size: 14px; margin-top: 28px; }
+    table { min-width: 460px; }
+    .pipeline { grid-template-columns: 1fr 1fr; }
+    .pipe-card::after { display: none; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .tier-envs { display: none; }
+    .diagram-wrap { overflow-x: auto; }
+    .diagram-wrap svg { min-width: 600px; }
+    pre { font-size: 11px; padding: 12px; }
+    .file-tree { font-size: 11px; padding: 10px 12px; }
+    .doc-footer { flex-direction: column; gap: 6px; font-size: 11px; }
+    .lang-bar { padding: 8px 16px; }
+  }
+
   /* ── 인쇄 ── */
   @media print {
     body { background: white; }
     .page { padding: 20px 28px; max-width: 100%; }
+    .lang-bar { display: none; }
     h2 { page-break-after: avoid; }
     table, .diagram-wrap, .pipeline, .cat-grid { page-break-inside: avoid; }
     pre { white-space: pre-wrap; }
+    [lang-ko], [lang-en] { display: revert !important; }
   }
 </style>
 </head>
-<body>
+<body class="lang-ko">
+
+<!-- ── 언어 토글 바 ── -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('ko')" id="btn-ko">한국어</button>
+  <button class="lang-btn" onclick="setLang('en')" id="btn-en">English</button>
+</div>
+
 <div class="page">
 
 <!-- ══ 헤더 ══════════════════════════════════════════════ -->
 <div class="doc-header">
-  <h1>⚙️ LightHarness — 에이전트 팀 오케스트레이터</h1>
-  <div class="subtitle">3-Tier 라우팅 기반 경량 에이전트 워크플로우 오케스트레이터 가이드</div>
+  <h1>⚙️ LightHarness</h1>
+  <div class="subtitle" lang-ko>3-Tier 라우팅 기반 경량 에이전트 워크플로우 오케스트레이터 가이드</div>
+  <div class="subtitle" lang-en>Lightweight Agent Workflow Orchestrator on 3-Tier Routing</div>
   <div class="meta">
-    <span class="meta-tag">최종 업데이트: 2026-04-07</span>
-    <span class="meta-tag">Queue 머지 모드 포함</span>
-    <span class="meta-tag">Claude Pro 요금제 기반</span>
+    <span class="meta-tag">2026-04-07</span>
+    <span class="meta-tag" lang-ko>Queue 머지 모드 포함</span>
+    <span class="meta-tag" lang-en>Queue Merge Mode Included</span>
+    <span class="meta-tag" lang-ko>Claude Pro 요금제 기반</span>
+    <span class="meta-tag" lang-en>Based on Claude Pro</span>
   </div>
 </div>
 
 <!-- ══ 1. 개요 ════════════════════════════════════════════ -->
-<h2>1. 개요</h2>
-<p>LightHarness는 Claude Pro 요금제 안에서 소규모·중규모 작업을 효율적으로 처리하는 <strong>경량 에이전트 팀 프레임워크</strong>다. 3-Tier 라우팅 위에 올라가는 워크플로우 오케스트레이터로, 슬래시 커맨드로 동작한다.</p>
-<p>핵심 설계 원칙은 <strong>cloud(Claude 직접) 사용을 최소화</strong>하고 판단·조율만 맡기며, 실작업은 Tier 2/3에 위임하는 것이다. cloud 스텝은 세션당 10개 이하를 목표로 한다.</p>
+<h2 lang-ko>1. 개요</h2>
+<h2 lang-en>1. Overview</h2>
+<p lang-ko>LightHarness는 Claude Pro 요금제 안에서 소규모·중규모 작업을 효율적으로 처리하는 <strong>경량 에이전트 팀 프레임워크</strong>다. 3-Tier 라우팅 위에 올라가는 워크플로우 오케스트레이터로, 슬래시 커맨드로 동작한다.</p>
+<p lang-en>LightHarness is a <strong>lightweight agent team framework</strong> for efficiently handling small-to-medium tasks within Claude Pro. It acts as a workflow orchestrator on top of 3-Tier routing, operated via slash commands.</p>
+<p lang-ko>핵심 설계 원칙은 <strong>cloud(Claude 직접) 사용을 최소화</strong>하고 판단·조율만 맡기며, 실작업은 Tier 2/3에 위임하는 것이다. cloud 스텝은 세션당 10개 이하를 목표로 한다.</p>
+<p lang-en>The core principle is to <strong>minimize direct cloud (Claude) usage</strong> — only judgment and coordination — while delegating actual work to Tier 2/3. Target: ≤10 cloud steps per session.</p>
 
 <!-- ══ 2. 3-Tier 구조 ══════════════════════════════════════ -->
-<h2>2. 3-Tier 구조</h2>
+<h2 lang-ko>2. 3-Tier 구조</h2>
+<h2 lang-en>2. 3-Tier Architecture</h2>
 
 <div class="tier-viz">
   <div class="tier-row t1">
     <span class="tier-label">Tier 1</span>
     <div class="tier-info">
       <div class="tier-name">Claude Code</div>
-      <div class="tier-desc">판단·조율, 슬래시 커맨드 처리, 아키텍처 결정, 결과 통합</div>
+      <div class="tier-desc" lang-ko>판단·조율, 슬래시 커맨드 처리, 아키텍처 결정, 결과 통합</div>
+      <div class="tier-desc" lang-en>Judgment, coordination, slash commands, architecture decisions</div>
     </div>
     <div class="tier-envs">
       <span class="env-chip">Mac Mini ✅</span>
@@ -399,7 +472,8 @@
     <span class="tier-label">Tier 2</span>
     <div class="tier-info">
       <div class="tier-name">Gemini</div>
-      <div class="tier-desc">subagent 또는 API 래퍼로 동작. Tier 3 실패 시 첫 번째 fallback</div>
+      <div class="tier-desc" lang-ko>subagent 또는 API 래퍼로 동작. Tier 3 실패 시 첫 번째 fallback</div>
+      <div class="tier-desc" lang-en>Runs as subagent or API wrapper. First fallback when Tier 3 fails.</div>
     </div>
     <div class="tier-envs">
       <span class="env-chip">Mac Mini ✅</span>
@@ -411,7 +485,8 @@
     <span class="tier-label">Tier 3</span>
     <div class="tier-info">
       <div class="tier-name">로컬 LLM</div>
-      <div class="tier-desc">MCP 툴 우선 호출 → bash 래퍼 폴백. Web/Codespaces에서는 Tier 1 fallback</div>
+      <div class="tier-desc" lang-ko>MCP 툴 우선 호출 → bash 래퍼 폴백. Web/Codespaces에서는 Tier 1 fallback</div>
+      <div class="tier-desc" lang-en>MCP tool first → bash wrapper fallback. Tier 1 fallback on Web/Codespaces.</div>
     </div>
     <div class="tier-envs">
       <span class="env-chip">Mac Mini ✅</span>
@@ -471,46 +546,72 @@
 
 <div class="callout warn">
   <span class="icon">⚠️</span>
-  <p><strong>local 에이전트 프롬프트는 반드시 영어</strong>로 작성한다. 로컬 LLM 품질 최적화 목적이며, RULE-2 위반 시 Blueprint Lint에서 자동 차단된다.</p>
+  <p lang-ko><strong>local 에이전트 프롬프트는 반드시 영어</strong>로 작성한다. 로컬 LLM 품질 최적화 목적이며, RULE-2 위반 시 Blueprint Lint에서 자동 차단된다.</p>
+  <p lang-en><strong>Local agent prompts must be written in English.</strong> This optimizes local LLM output quality. RULE-2 in Blueprint Lint will block violations automatically.</p>
 </div>
 
 <!-- ══ 3. 슬래시 커맨드 ════════════════════════════════════ -->
-<h2>3. 슬래시 커맨드</h2>
-<table>
+<h2 lang-ko>3. 슬래시 커맨드</h2>
+<h2 lang-en>3. Slash Commands</h2>
+<div class="table-wrap"><table>
   <thead>
     <tr><th>커맨드</th><th>역할</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>/harness [목표]</code></td><td>Blueprint YAML 설계 + Lint 자동 실행</td></tr>
-    <tr><td><code>/harness-run [name]</code></td><td>단일 Blueprint 실행</td></tr>
-    <tr><td><code>/harness-run</code> (인자 없음)</td><td>큐 자동 감지 — pending 2개+ → 머지 모드, 1개 → 단일 실행</td></tr>
-    <tr><td><code>/harness-run --queue</code></td><td>큐 머지 모드 강제</td></tr>
-    <tr><td><code>/harness-run --no-merge</code></td><td>큐 있어도 순차 단일 실행</td></tr>
-    <tr><td><code>/harness-check [path]</code></td><td>정적 버그 감사 4단계</td></tr>
-    <tr><td><code>/rsm</code></td><td>최신 핸드오프 로드 + 다음 세션 파일 생성</td></tr>
-    <tr><td><code>/rsm log</code></td><td>커밋 + 핸드오프 저장 + Obsidian 로그 append</td></tr>
+    <tr><td><code>/harness [목표]</code></td>
+      <td lang-ko>Blueprint YAML 설계 + Lint 자동 실행</td>
+      <td lang-en>Design Blueprint YAML + auto Lint</td></tr>
+    <tr><td><code>/harness-run [name]</code></td>
+      <td lang-ko>단일 Blueprint 실행</td>
+      <td lang-en>Run a single Blueprint</td></tr>
+    <tr><td><code>/harness-run</code></td>
+      <td lang-ko>큐 자동 감지 — pending 2개+ → 머지 모드, 1개 → 단일 실행</td>
+      <td lang-en>Auto-detect queue — 2+ pending → merge mode, 1 → single</td></tr>
+    <tr><td><code>/harness-run --queue</code></td>
+      <td lang-ko>큐 머지 모드 강제</td>
+      <td lang-en>Force queue merge mode</td></tr>
+    <tr><td><code>/harness-run --no-merge</code></td>
+      <td lang-ko>큐 있어도 순차 단일 실행</td>
+      <td lang-en>Sequential single execution even with queue</td></tr>
+    <tr><td><code>/harness-check [path]</code></td>
+      <td lang-ko>정적 버그 감사 4단계</td>
+      <td lang-en>4-step static bug audit</td></tr>
+    <tr><td><code>/rsm</code></td>
+      <td lang-ko>최신 핸드오프 로드 + 다음 세션 파일 생성</td>
+      <td lang-en>Load latest handoff + create next session file</td></tr>
+    <tr><td><code>/rsm log</code></td>
+      <td lang-ko>커밋 + 핸드오프 저장 + Obsidian 로그 append</td>
+      <td lang-en>Commit + save handoff + append Obsidian log</td></tr>
   </tbody>
-</table>
+</table></div>
 
 <!-- ══ 4. Blueprint YAML ════════════════════════════════════ -->
-<h2>4. Blueprint YAML 스키마</h2>
+<h2 lang-ko>4. Blueprint YAML 스키마</h2>
+<h2 lang-en>4. Blueprint YAML Schema</h2>
 
-<h3>패턴 종류</h3>
-<table>
-  <thead><tr><th>패턴</th><th>적용 상황</th><th>에이전트 구성</th></tr></thead>
+<h3 lang-ko>패턴 종류</h3>
+<h3 lang-en>Pattern Types</h3>
+<div class="table-wrap"><table>
+  <thead><tr>
+    <th>Pattern</th>
+    <th lang-ko>적용 상황</th><th lang-en>When to Use</th>
+    <th lang-ko>에이전트 구성</th><th lang-en>Agent Setup</th>
+  </tr></thead>
   <tbody>
     <tr>
       <td><strong>Plan-Do-Review</strong></td>
-      <td>분해 가능한 작업, 반복 처리</td>
+      <td lang-ko>분해 가능한 작업, 반복 처리</td>
+      <td lang-en>Decomposable tasks, iterative work</td>
       <td><code>planner(local)</code> → <code>worker</code> → <code>reviewer(local)</code></td>
     </tr>
     <tr>
       <td><strong>Single-Agent+Helper</strong></td>
-      <td>단순·소규모, 로컬 보조만 필요</td>
+      <td lang-ko>단순·소규모, 로컬 보조만 필요</td>
+      <td lang-en>Simple/small tasks, local assist only</td>
       <td><code>helper(local)</code> → <code>executor(cloud)</code></td>
     </tr>
   </tbody>
-</table>
+</table></div>
 
 <h3>YAML 스키마</h3>
 <pre><span class="nm">Template_Name</span><span class="cm">:</span> <span class="st">"작업명_snake_case"</span>
@@ -536,25 +637,35 @@
     <span class="nm">Max_Agents</span><span class="cm">:</span> <span class="vl">3</span>
     <span class="nm">Max_Cloud_Steps_Per_Session</span><span class="cm">:</span> <span class="vl">10</span></pre>
 
-<h3>Execution_Target 규칙</h3>
-<table>
-  <thead><tr><th>Target</th><th>용도</th><th>제약</th></tr></thead>
+<h3 lang-ko>Execution_Target 규칙</h3>
+<h3 lang-en>Execution_Target Rules</h3>
+<div class="table-wrap"><table>
+  <thead><tr>
+    <th>Target</th>
+    <th lang-ko>용도</th><th lang-en>Role</th>
+    <th lang-ko>제약</th><th lang-en>Constraint</th>
+  </tr></thead>
   <tbody>
     <tr>
       <td><span class="badge cloud">cloud</span></td>
-      <td>아키텍처 결정, 계획, 결과 통합</td>
-      <td>전체의 <strong>1/3 이하</strong> 목표. 머지 시 여러 단계를 1회로 병합</td>
+      <td lang-ko>아키텍처 결정, 계획, 결과 통합</td>
+      <td lang-en>Architecture decisions, planning, result synthesis</td>
+      <td lang-ko>전체의 <strong>1/3 이하</strong> 목표. 머지 시 여러 단계를 1회로 병합</td>
+      <td lang-en>Target <strong>≤1/3</strong> of total agents. Merge multiple steps into 1 call.</td>
     </tr>
     <tr>
       <td><span class="badge local">local</span></td>
-      <td>MCP 툴 우선 호출 → 실패 시 bash 래퍼 폴백</td>
-      <td>Web/Codespaces: subagent 또는 Claude 직접 처리</td>
+      <td lang-ko>MCP 툴 우선 호출 → 실패 시 bash 래퍼 폴백</td>
+      <td lang-en>MCP tool first → bash wrapper fallback on failure</td>
+      <td lang-ko>Web/Codespaces: subagent 또는 Claude 직접 처리</td>
+      <td lang-en>Web/Codespaces: subagent or Claude directly</td>
     </tr>
   </tbody>
-</table>
+</table></div>
 
 <!-- ══ 5. /harness-run 실행 흐름 ══════════════════════════ -->
-<h2>5. /harness-run 실행 흐름</h2>
+<h2 lang-ko>5. /harness-run 실행 흐름</h2>
+<h2 lang-en>5. /harness-run Execution Flow</h2>
 
 <div class="diagram-wrap">
 <svg width="100%" viewBox="0 0 780 280" xmlns="http://www.w3.org/2000/svg">
@@ -620,19 +731,34 @@
 </div>
 
 <!-- ══ 6. Queue 머지 모드 ══════════════════════════════════ -->
-<h2>6. Queue 머지 모드</h2>
-<p>할 일 목록에 쌓인 Blueprint들을 <code>/harness-run</code> 한 번에 효율적으로 처리한다. cloud 단계를 배치 내에서 1회로 병합해 <strong>실행 횟수를 절감</strong>하는 것이 핵심이다.</p>
+<h2 lang-ko>6. Queue 머지 모드</h2>
+<h2 lang-en>6. Queue Merge Mode</h2>
+<p lang-ko>할 일 목록에 쌓인 Blueprint들을 <code>/harness-run</code> 한 번에 효율적으로 처리한다. cloud 단계를 배치 내에서 1회로 병합해 <strong>실행 횟수를 절감</strong>하는 것이 핵심이다.</p>
+<p lang-en>Processes multiple queued Blueprints in a single <code>/harness-run</code> call. The key is <strong>merging cloud steps</strong> within a batch into one execution to reduce API calls.</p>
 
-<h3>배치 구성 기준 (우선순위순)</h3>
-<table>
-  <thead><tr><th>순위</th><th>조건</th><th>결과</th></tr></thead>
+<h3 lang-ko>배치 구성 기준 (우선순위순)</h3>
+<h3 lang-en>Batch Grouping Rules (priority order)</h3>
+<div class="table-wrap"><table>
+  <thead><tr>
+    <th>#</th>
+    <th lang-ko>조건</th><th lang-en>Condition</th>
+    <th lang-ko>결과</th><th lang-en>Result</th>
+  </tr></thead>
   <tbody>
-    <tr><td>1</td><td><code>merge_group</code> 값 동일</td><td>같은 배치</td></tr>
-    <tr><td>2</td><td><code>affected_files</code> 교집합 존재</td><td>같은 배치</td></tr>
-    <tr><td>3</td><td><code>dependencies</code> 관계</td><td>같은 배치, 순서 유지</td></tr>
-    <tr><td>4</td><td>위 조건 없음</td><td>별도 배치 (독립 실행)</td></tr>
+    <tr><td>1</td>
+      <td lang-ko><code>merge_group</code> 값 동일</td><td lang-en>Same <code>merge_group</code> value</td>
+      <td lang-ko>같은 배치</td><td lang-en>Same batch</td></tr>
+    <tr><td>2</td>
+      <td lang-ko><code>affected_files</code> 교집합 존재</td><td lang-en><code>affected_files</code> overlap</td>
+      <td lang-ko>같은 배치</td><td lang-en>Same batch</td></tr>
+    <tr><td>3</td>
+      <td lang-ko><code>dependencies</code> 관계</td><td lang-en><code>dependencies</code> relationship</td>
+      <td lang-ko>같은 배치, 순서 유지</td><td lang-en>Same batch, order preserved</td></tr>
+    <tr><td>4</td>
+      <td lang-ko>위 조건 없음</td><td lang-en>None of the above</td>
+      <td lang-ko>별도 배치 (독립 실행)</td><td lang-en>Separate batch (independent)</td></tr>
   </tbody>
-</table>
+</table></div>
 
 <h3>실행 계획 예시</h3>
 <pre><span class="cm">▶ 큐 머지 실행: 2개 Blueprint → 1개 배치</span>
@@ -643,104 +769,129 @@
   <span class="kw">local</span>: reviewer_A → reviewer_B <span class="cm">(순차)</span></pre>
 
 <!-- ══ 7. harness-check ════════════════════════════════════ -->
-<h2>7. harness-check — 4단계 정적 버그 감사</h2>
+<h2 lang-ko>7. harness-check — 4단계 정적 버그 감사</h2>
+<h2 lang-en>7. harness-check — 4-Step Static Bug Audit</h2>
 
 <div class="pipeline">
   <div class="pipe-card local">
     <div class="step-num">STEP 1</div>
     <div class="step-name">scout</div>
-    <div class="step-desc"><span class="badge local">local</span><br>프로젝트 타입 + 핵심 파일 목록</div>
+    <div class="step-desc"><span class="badge local">local</span><br>
+      <span lang-ko>프로젝트 타입 + 핵심 파일 목록</span>
+      <span lang-en>Project type + key file list</span>
+    </div>
   </div>
   <div class="pipe-card local">
     <div class="step-num">STEP 2</div>
     <div class="step-name">auditor</div>
-    <div class="step-desc"><span class="badge local">local</span><br>8개 카테고리 버그 분석</div>
+    <div class="step-desc"><span class="badge local">local</span><br>
+      <span lang-ko>8개 카테고리 버그 분석</span>
+      <span lang-en>Bug analysis in 8 categories</span>
+    </div>
   </div>
   <div class="pipe-card cloud">
     <div class="step-num">STEP 3</div>
     <div class="step-name">patcher</div>
-    <div class="step-desc"><span class="badge cloud">cloud</span><br>CRITICAL / WARNING 수정</div>
+    <div class="step-desc"><span class="badge cloud">cloud</span><br>
+      <span lang-ko>CRITICAL / WARNING 수정</span>
+      <span lang-en>Fix CRITICAL / WARNING issues</span>
+    </div>
   </div>
   <div class="pipe-card local">
     <div class="step-num">STEP 4</div>
     <div class="step-name">verifier</div>
-    <div class="step-desc"><span class="badge local">local</span><br>4가지 회귀 검증</div>
+    <div class="step-desc"><span class="badge local">local</span><br>
+      <span lang-ko>4가지 회귀 검증</span>
+      <span lang-en>4 regression checks</span>
+    </div>
   </div>
 </div>
 
-<h3>8개 버그 카테고리</h3>
+<h3 lang-ko>8개 버그 카테고리</h3>
+<h3 lang-en>8 Bug Categories</h3>
 <div class="cat-grid">
   <div class="cat-item cat-logic">
     <div class="cat-num">CAT-1</div>
     <div class="cat-content">
       <div class="cat-title">API Contract</div>
-      <div class="cat-ex">필드명 오타, 타입 가정</div>
+      <div class="cat-ex" lang-ko>필드명 오타, 타입 가정</div>
+      <div class="cat-ex" lang-en>Field name typos, type assumptions</div>
     </div>
   </div>
   <div class="cat-item cat-logic">
     <div class="cat-num">CAT-2</div>
     <div class="cat-content">
       <div class="cat-title">Interface / Type Mismatch</div>
-      <div class="cat-ex">TS interface vs 실제 응답</div>
+      <div class="cat-ex" lang-ko>TS interface vs 실제 응답</div>
+      <div class="cat-ex" lang-en>TS interface vs actual response</div>
     </div>
   </div>
   <div class="cat-item cat-logic">
     <div class="cat-num">CAT-3</div>
     <div class="cat-content">
       <div class="cat-title">Null / Undefined Safety</div>
-      <div class="cat-ex">optional chaining 누락</div>
+      <div class="cat-ex" lang-ko>optional chaining 누락</div>
+      <div class="cat-ex" lang-en>Missing optional chaining</div>
     </div>
   </div>
   <div class="cat-item cat-logic">
     <div class="cat-num">CAT-4</div>
     <div class="cat-content">
       <div class="cat-title">Filter &amp; Edge Case</div>
-      <div class="cat-ex">빈 배열 미처리</div>
+      <div class="cat-ex" lang-ko>빈 배열 미처리</div>
+      <div class="cat-ex" lang-en>Unhandled empty arrays</div>
     </div>
   </div>
   <div class="cat-item cat-qual">
     <div class="cat-num">CAT-5</div>
     <div class="cat-content">
       <div class="cat-title">Dead Code</div>
-      <div class="cat-ex">사용 안 하는 export</div>
+      <div class="cat-ex" lang-ko>사용 안 하는 export</div>
+      <div class="cat-ex" lang-en>Unused exports</div>
     </div>
   </div>
   <div class="cat-item cat-qual">
     <div class="cat-num">CAT-6</div>
     <div class="cat-content">
       <div class="cat-title">Error Handling</div>
-      <div class="cat-ex">try/catch 누락</div>
+      <div class="cat-ex" lang-ko>try/catch 누락</div>
+      <div class="cat-ex" lang-en>Missing try/catch</div>
     </div>
   </div>
   <div class="cat-item cat-sec">
     <div class="cat-num">CAT-7 <span class="badge hi">high</span></div>
     <div class="cat-content">
       <div class="cat-title">Security</div>
-      <div class="cat-ex">SQL injection, XSS, 하드코딩 비밀값</div>
+      <div class="cat-ex" lang-ko>SQL injection, XSS, 하드코딩 비밀값</div>
+      <div class="cat-ex" lang-en>SQL injection, XSS, hardcoded secrets</div>
     </div>
   </div>
   <div class="cat-item cat-sec">
     <div class="cat-num">CAT-8 <span class="badge hi">high</span></div>
     <div class="cat-content">
       <div class="cat-title">Integration Consistency</div>
-      <div class="cat-ex">파라미터명 불일치, env var 불일치</div>
+      <div class="cat-ex" lang-ko>파라미터명 불일치, env var 불일치</div>
+      <div class="cat-ex" lang-en>Parameter name mismatch, env var mismatch</div>
     </div>
   </div>
 </div>
 
 <!-- ══ 8. Blueprint Lint ══════════════════════════════════ -->
-<h2>8. Blueprint Lint — 설계 직후 자동 실행</h2>
-<p><code>/harness</code> 로 Blueprint를 설계하면 Lint가 즉시 실행되어 아래 5가지 규칙을 검사한다. 위반 시 실행이 차단된다.</p>
+<h2 lang-ko>8. Blueprint Lint — 설계 직후 자동 실행</h2>
+<h2 lang-en>8. Blueprint Lint — Auto-runs After Design</h2>
+<p lang-ko><code>/harness</code> 로 Blueprint를 설계하면 Lint가 즉시 실행되어 아래 5가지 규칙을 검사한다. 위반 시 실행이 차단된다.</p>
+<p lang-en>When you design a Blueprint with <code>/harness</code>, Lint runs immediately and checks 5 rules. Violations block execution.</p>
 <ul class="lint-list">
-  <li><span class="rule-tag">RULE-1</span> Workflow의 <code>To</code> 값이 Agent Id 또는 <code>END</code></li>
-  <li><span class="rule-tag">RULE-2</span> local 에이전트 프롬프트에 한글 없음</li>
-  <li><span class="rule-tag">RULE-3</span> cloud 비율 ≤ 0.5</li>
-  <li><span class="rule-tag">RULE-4</span> 모든 Workflow step에 <code>Error_Policy</code> 있음</li>
-  <li><span class="rule-tag">RULE-5</span> <code>Queue.affected_files</code> 비어있지 않음</li>
+  <li><span class="rule-tag">RULE-1</span> <span lang-ko>Workflow의 <code>To</code> 값이 Agent Id 또는 <code>END</code></span><span lang-en>Workflow <code>To</code> values match an Agent Id or <code>END</code></span></li>
+  <li><span class="rule-tag">RULE-2</span> <span lang-ko>local 에이전트 프롬프트에 한글 없음</span><span lang-en>No Korean characters in local agent prompts</span></li>
+  <li><span class="rule-tag">RULE-3</span> <span lang-ko>cloud 비율 ≤ 0.5</span><span lang-en>Cloud agent ratio ≤ 0.5</span></li>
+  <li><span class="rule-tag">RULE-4</span> <span lang-ko>모든 Workflow step에 <code>Error_Policy</code> 있음</span><span lang-en>Every Workflow step has <code>Error_Policy</code></span></li>
+  <li><span class="rule-tag">RULE-5</span> <span lang-ko><code>Queue.affected_files</code> 비어있지 않음</span><span lang-en><code>Queue.affected_files</code> is not empty</span></li>
 </ul>
 
 <!-- ══ 9. Resume 핸드오프 ═════════════════════════════════ -->
-<h2>9. Resume 핸드오프 시스템</h2>
+<h2 lang-ko>9. Resume 핸드오프 시스템</h2>
+<h2 lang-en>9. Resume Handoff System</h2>
 
 <div class="file-tree">
 <span class="dir">Lib/resume-log.md</span>                 <span class="cm">← 포인터 (최신 파일 경로 한 줄)</span>
@@ -751,26 +902,30 @@
 </div>
 
 <table>
-  <thead><tr><th>커맨드</th><th>동작</th></tr></thead>
+  <thead><tr><th>커맨드</th><th lang-ko>동작</th><th lang-en>Action</th></tr></thead>
   <tbody>
     <tr>
-      <td><code>/rsm</code> (세션 시작)</td>
-      <td>resume-log.md 읽어 최신 파일 로드 → 이어서 할 일 출력 → M+1 빈 파일 생성 + 포인터 갱신</td>
+      <td><code>/rsm</code> <span lang-ko>(세션 시작)</span><span lang-en>(session start)</span></td>
+      <td lang-ko>resume-log.md 읽어 최신 파일 로드 → 이어서 할 일 출력 → M+1 빈 파일 생성 + 포인터 갱신</td>
+      <td lang-en>Reads resume-log.md → loads latest file → prints next tasks → creates M+1 placeholder + updates pointer</td>
     </tr>
     <tr>
-      <td><code>/rsm log</code> (세션 종료)</td>
-      <td>미커밋 변경 → Tier 3으로 커밋 메시지 생성 후 커밋 → Obsidian <code>logs/YYYY-MM-DD.md</code> append → 핸드오프 저장</td>
+      <td><code>/rsm log</code> <span lang-ko>(세션 종료)</span><span lang-en>(session end)</span></td>
+      <td lang-ko>미커밋 변경 → Tier 3으로 커밋 메시지 생성 후 커밋 → Obsidian <code>logs/YYYY-MM-DD.md</code> append → 핸드오프 저장</td>
+      <td lang-en>Uncommitted changes → commit via Tier 3 → append to Obsidian <code>logs/YYYY-MM-DD.md</code> → save handoff</td>
     </tr>
   </tbody>
 </table>
 
 <div class="callout info">
   <span class="icon">ℹ️</span>
-  <p>Obsidian 로그 형식: <code>- `HH:MM` **repo** `hash` commit message</code></p>
+  <p lang-ko>Obsidian 로그 형식: <code>- `HH:MM` **repo** `hash` commit message</code></p>
+  <p lang-en>Obsidian log format: <code>- `HH:MM` **repo** `hash` commit message</code></p>
 </div>
 
 <!-- ══ 10. 실사용 예 ══════════════════════════════════════ -->
-<h2>10. 실사용 예</h2>
+<h2 lang-ko>10. 실사용 예</h2>
+<h2 lang-en>10. Real Use Cases</h2>
 <table class="use-case-table">
   <thead>
     <tr><th>날짜</th><th>Blueprint</th><th>작업 요약</th><th>cloud 스텝</th></tr>
@@ -811,18 +966,26 @@
 
 <div class="callout info">
   <span class="icon">💡</span>
-  <p>cloud 스텝을 세션당 10개 이하로 유지하면서 실작업은 local / Tier 2에 위임하는 구조가 핵심이다. 모든 사례에서 cloud 스텝이 1~2회에 그침을 확인할 수 있다.</p>
+  <p lang-ko>cloud 스텝을 세션당 10개 이하로 유지하면서 실작업은 local / Tier 2에 위임하는 구조가 핵심이다. 모든 사례에서 cloud 스텝이 1~2회에 그침을 확인할 수 있다.</p>
+  <p lang-en>The key is keeping cloud steps ≤10 per session while delegating real work to local / Tier 2. All examples show cloud steps staying at 1–2 per run.</p>
 </div>
 
 <!-- ══ 푸터 ══════════════════════════════════════════════ -->
 <div class="doc-footer">
-  <span>관련: Claude Code 토큰 절감 — 3-tier sub-agent 구조 | CLAUDE SYSTEM PROMPT</span>
+  <span lang-ko>관련: Claude Code 토큰 절감 — 3-tier sub-agent 구조 | CLAUDE SYSTEM PROMPT</span>
+  <span lang-en>Related: Claude Code Token Savings — 3-tier sub-agent structure | CLAUDE SYSTEM PROMPT</span>
   <span>LightHarness Guide · 2026-04-07</span>
 </div>
 
 </div><!-- .page -->
 
 <script>
+function setLang(lang) {
+  document.body.className = 'lang-' + lang;
+  document.getElementById('btn-ko').classList.toggle('active', lang === 'ko');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+}
+
 // 인쇄 시 구글 폰트 로드 대기
 window.addEventListener('beforeprint', () => {
   document.fonts.ready;
