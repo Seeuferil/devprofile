@@ -324,171 +324,12 @@
 </div>
 
 <!-- ══ 3. 생태계 ═════════════════════════════════════════ -->
+<!-- ══ 3. MCP 생태계 ═════════════════════════════════════ -->
 <h2 lang-ko>3. MCP 생태계</h2>
 <h2 lang-en>3. MCP Ecosystem</h2>
 
-<p lang-ko>MathWorks가 공식 제공하는 오픈소스 MCP 서버다. 로컬에 설치된 MATLAB을 AI 에이전트가 직접 제어할 수 있게 한다. MATLAB 라이선스만 있으면 무료로 사용 가능하다.</p>
-<p lang-en>An official open-source MCP server from MathWorks. It lets AI agents directly control your locally installed MATLAB. Free to use with any MATLAB license.</p>
-
-<h3 lang-ko>제공 도구 (5개)</h3>
-<h3 lang-en>Provided Tools (5)</h3>
-<div class="tool-list">
-  <div class="tool-item">
-    <span class="tool-num">1</span>
-    <div class="tool-content">
-      <div class="tool-name">detect_matlab_toolboxes</div>
-      <div class="tool-ex" lang-ko>MATLAB 버전 + 설치된 Toolbox 목록 반환</div>
-      <div class="tool-ex" lang-en>Returns MATLAB version + installed toolbox list</div>
-    </div>
-  </div>
-  <div class="tool-item">
-    <span class="tool-num">2</span>
-    <div class="tool-content">
-      <div class="tool-name">check_matlab_code</div>
-      <div class="tool-ex" lang-ko>.m 파일 정적 분석 (스타일, 성능, 보안)</div>
-      <div class="tool-ex" lang-en>Static analysis of .m files (style, perf, security)</div>
-    </div>
-  </div>
-  <div class="tool-item">
-    <span class="tool-num">3</span>
-    <div class="tool-content">
-      <div class="tool-name">evaluate_matlab_code</div>
-      <div class="tool-ex" lang-ko>MATLAB 코드 문자열 실행 + 결과 반환</div>
-      <div class="tool-ex" lang-en>Execute MATLAB code string + return results</div>
-    </div>
-  </div>
-  <div class="tool-item">
-    <span class="tool-num">4</span>
-    <div class="tool-content">
-      <div class="tool-name">run_matlab_file</div>
-      <div class="tool-ex" lang-ko>.m 스크립트 파일 실행</div>
-      <div class="tool-ex" lang-en>Run .m script files</div>
-    </div>
-  </div>
-  <div class="tool-item" style="grid-column: span 2;">
-    <span class="tool-num">5</span>
-    <div class="tool-content">
-      <div class="tool-name">run_matlab_test_file</div>
-      <div class="tool-ex" lang-ko>MATLAB 단위 테스트 실행 + 결과 리포트</div>
-      <div class="tool-ex" lang-en>Run MATLAB unit tests + results report</div>
-    </div>
-  </div>
-</div>
-
-<h3 lang-ko>Resources (2개)</h3>
-<h3 lang-en>Resources (2)</h3>
-<div class="table-wrap"><table>
-  <thead><tr>
-    <th>Resource</th>
-    <th>URI</th>
-    <th lang-ko>내용</th><th lang-en>Content</th>
-  </tr></thead>
-  <tbody>
-    <tr>
-      <td>Coding Guidelines</td>
-      <td><code>guidelines://coding</code></td>
-      <td lang-ko>MATLAB 네이밍, 포맷, 성능 모범사례</td>
-      <td lang-en>MATLAB naming, formatting, performance best practices</td>
-    </tr>
-    <tr>
-      <td>Live Code Guidelines</td>
-      <td><code>guidelines://plain-text-live-code</code></td>
-      <td lang-ko>Live Script 생성 규칙 (R2025a+)</td>
-      <td lang-en>Live Script generation rules (R2025a+)</td>
-    </tr>
-  </tbody>
-</table></div>
-
-<h3 lang-ko>Claude Code에서 설정</h3>
-<h3 lang-en>Setup in Claude Code</h3>
-<pre><span class="cm"># MATLAB MCP 서버 등록 (한 줄)</span>
-<span class="kw">claude mcp add</span> --transport stdio <span class="st">matlab</span> -- /path/to/matlab-mcp-core-server \
-  --initialize-matlab-on-startup true
-
-<span class="cm"># 이후 Claude Code 세션에서 바로 사용 가능</span>
-<span class="cm"># "이 .m 파일 코드 리뷰해줘" → check_matlab_code 자동 호출</span>
-<span class="cm"># "FFT 결과 플롯해줘" → evaluate_matlab_code 자동 호출</span></pre>
-
-<div class="callout ok">
-  <span class="icon">&#9989;</span>
-  <p lang-ko><strong>Agentic 워크플로우 예시:</strong> Claude Code가 MATLAB MCP를 통해 코드 작성 &rarr; 실행 &rarr; 결과 확인 &rarr; 수정을 자율적으로 반복한다. 사람은 목표만 제시하면 된다.</p>
-  <p lang-en><strong>Agentic workflow example:</strong> Claude Code autonomously writes code &rarr; executes via MATLAB MCP &rarr; checks results &rarr; iterates. Humans only provide the goal.</p>
-</div>
-
-<!-- ══ 4. Claude Code 연결 ════════════════════════════════ -->
-<h2 lang-ko>4. Claude Code &times; MCP 로컬 연결</h2>
-<h2 lang-en>4. Claude Code &times; MCP Local Integration</h2>
-
-<p lang-ko>Claude Code는 MCP Client가 내장되어 있다. 명령 한 줄이면 로컬 MCP 서버를 등록할 수 있고, 세션에서 자연어로 도구를 호출한다.</p>
-<p lang-en>Claude Code has a built-in MCP Client. One command registers a local MCP server, and you call tools via natural language in your session.</p>
-
-<h3 lang-ko>서버 등록</h3>
-<h3 lang-en>Register a Server</h3>
-
-<pre><span class="cm"># MCP 서버 추가 (stdio transport)</span>
-<span class="kw">claude mcp add</span> --transport stdio <span class="st">[name]</span> -- /path/to/server-binary [args...]
-
-<span class="cm"># 등록된 서버 확인</span>
-<span class="kw">claude mcp list</span></pre>
-
-<h3 lang-ko>설정 파일</h3>
-<h3 lang-en>Configuration File</h3>
-
-<p lang-ko><code>~/.claude/settings.json</code> 또는 프로젝트 <code>.claude/settings.local.json</code>에서 관리한다.</p>
-<p lang-en>Managed in <code>~/.claude/settings.json</code> or project-level <code>.claude/settings.local.json</code>.</p>
-
-<pre><span class="cm">// settings.json 예시</span>
-{
-  <span class="st">"mcpServers"</span>: {
-    <span class="st">"filesystem"</span>: {
-      <span class="st">"command"</span>: <span class="st">"npx"</span>,
-      <span class="st">"args"</span>: [<span class="st">"-y"</span>, <span class="st">"@anthropic/mcp-filesystem"</span>, <span class="st">"/allowed/path"</span>],
-      <span class="st">"transport"</span>: <span class="st">"stdio"</span>
-    }
-  }
-}</pre>
-
-<div class="diagram-wrap">
-<svg width="100%" viewBox="0 0 780 180" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="#888780" stroke-width="1.5" stroke-linecap="round"/>
-    </marker>
-  </defs>
-  <rect x="30" y="30" width="180" height="120" rx="10" fill="#1E1E2E" stroke="#444441" stroke-width="1"/>
-  <text x="120" y="55" text-anchor="middle" font-size="11" fill="#CDD6F4" font-weight="700">Claude Code (CLI)</text>
-  <text x="120" y="78" text-anchor="middle" font-size="10" fill="#A6E3A1">&gt; claude</text>
-  <text x="120" y="98" text-anchor="middle" font-size="9" fill="#6C7086" lang-ko>MCP Client 내장</text>
-  <text x="120" y="98" text-anchor="middle" font-size="9" fill="#6C7086" lang-en>Built-in MCP Client</text>
-  <text x="120" y="118" text-anchor="middle" font-size="9" fill="#6C7086">settings.json</text>
-  <text x="120" y="138" text-anchor="middle" font-size="9" fill="#89DCEB">stdio</text>
-  <line x1="210" y1="70" x2="280" y2="50" stroke="#D3D1C7" stroke-width="1" marker-end="url(#arr2)"/>
-  <line x1="210" y1="90" x2="280" y2="90" stroke="#D3D1C7" stroke-width="1" marker-end="url(#arr2)"/>
-  <line x1="210" y1="110" x2="280" y2="130" stroke="#D3D1C7" stroke-width="1" marker-end="url(#arr2)"/>
-  <rect x="282" y="25" width="220" height="42" rx="8" fill="#E6F1FB" stroke="#85B7EB" stroke-width="1"/>
-  <text x="392" y="44" text-anchor="middle" font-size="10" fill="#185FA5" font-weight="600">Filesystem &middot; Git &middot; DB</text>
-  <text x="392" y="60" text-anchor="middle" font-size="9" fill="#185FA5">stdio (local)</text>
-  <rect x="282" y="75" width="220" height="32" rx="8" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/>
-  <text x="392" y="96" text-anchor="middle" font-size="10" fill="#BA7517" font-weight="600" lang-ko>MATLAB &middot; Python &middot; 커스텀</text>
-  <text x="392" y="96" text-anchor="middle" font-size="10" fill="#BA7517" font-weight="600" lang-en>MATLAB &middot; Python &middot; Custom</text>
-  <rect x="282" y="115" width="220" height="32" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1"/>
-  <text x="392" y="136" text-anchor="middle" font-size="10" fill="#64748B" font-weight="600">Notion &middot; Slack &middot; Figma</text>
-  <rect x="20" y="10" width="500" height="155" rx="14" fill="none" stroke="#D3D1C7" stroke-width="1" stroke-dasharray="6 3"/>
-  <text x="270" y="175" text-anchor="middle" font-size="10" fill="#888780" lang-ko>&#128187; 로컬 머신 (stdio) + 원격 (SSE)</text>
-  <text x="270" y="175" text-anchor="middle" font-size="10" fill="#888780" lang-en>&#128187; Local (stdio) + Remote (SSE)</text>
-  <rect x="560" y="40" width="190" height="80" rx="10" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1"/>
-  <text x="655" y="65" text-anchor="middle" font-size="10" fill="#64748B" font-weight="700">Remote (SSE)</text>
-  <text x="655" y="85" text-anchor="middle" font-size="9" fill="#64748B">Gmail &middot; Calendar</text>
-  <text x="655" y="100" text-anchor="middle" font-size="9" fill="#64748B">Canva &middot; Salesforce</text>
-  <line x1="502" y1="80" x2="558" y2="80" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#arr2)"/>
-</svg>
-  <div class="diagram-caption" lang-ko>Claude Code에서 로컬 + 원격 MCP 서버 동시 연결</div>
-  <div class="diagram-caption" lang-en>Claude Code connecting local + remote MCP servers</div>
-</div>
-
-<!-- ══ 5. MATLAB MCP 사례 ════════════════════════════════ -->
-<h2 lang-ko>5. 사례 연구: MATLAB MCP Core Server</h2>
-<h2 lang-en>5. Case Study: MATLAB MCP Core Server</h2>
+<p lang-ko>2026년 현재 500개 이상의 MCP 서버가 존재한다. 주요 영역별 대표 서버를 정리한다.</p>
+<p lang-en>As of 2026, 500+ MCP servers exist. Here are representative servers by category.</p>
 
 <div class="eco-grid">
   <div class="eco-card dev">
@@ -534,6 +375,161 @@
   <p lang-ko>전체 MCP 서버 목록: <a href="https://github.com/modelcontextprotocol/servers" style="color: var(--blue); text-decoration: underline;">github.com/modelcontextprotocol/servers</a> &middot; 커뮤니티 큐레이션: <a href="https://mcpservers.org" style="color: var(--blue); text-decoration: underline;">mcpservers.org</a></p>
   <p lang-en>Full MCP server list: <a href="https://github.com/modelcontextprotocol/servers" style="color: var(--blue); text-decoration: underline;">github.com/modelcontextprotocol/servers</a> &middot; Community curated: <a href="https://mcpservers.org" style="color: var(--blue); text-decoration: underline;">mcpservers.org</a></p>
 </div>
+
+<h3 lang-ko>MATLAB MCP Core Server</h3>
+<h3 lang-en>MATLAB MCP Core Server</h3>
+
+<p lang-ko>위 생태계 중 컴퓨팅 영역의 대표 사례로, MathWorks가 공식 제공하는 오픈소스 MCP 서버다. 로컬 MATLAB을 AI 에이전트가 직접 제어할 수 있다.</p>
+<p lang-en>A standout example in the Compute category &mdash; an official open-source MCP server from MathWorks that lets AI agents directly control your local MATLAB installation.</p>
+
+<div class="table-wrap"><table>
+  <thead><tr>
+    <th lang-ko>도구</th><th lang-en>Tool</th>
+    <th lang-ko>기능</th><th lang-en>Function</th>
+  </tr></thead>
+  <tbody>
+    <tr><td><code>detect_matlab_toolboxes</code></td><td lang-ko>MATLAB 버전 + 설치된 Toolbox 목록</td><td lang-en>MATLAB version + installed toolbox list</td></tr>
+    <tr><td><code>check_matlab_code</code></td><td lang-ko>.m 파일 정적 분석 (스타일, 성능, 보안)</td><td lang-en>Static analysis of .m files</td></tr>
+    <tr><td><code>evaluate_matlab_code</code></td><td lang-ko>MATLAB 코드 문자열 실행 + 결과 반환</td><td lang-en>Execute code string + return results</td></tr>
+    <tr><td><code>run_matlab_file</code></td><td lang-ko>.m 스크립트 파일 실행</td><td lang-en>Run .m script files</td></tr>
+    <tr><td><code>run_matlab_test_file</code></td><td lang-ko>단위 테스트 실행 + 리포트</td><td lang-en>Run unit tests + report</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ══ 4. Claude Code 연결 ════════════════════════════════ -->
+<h2 lang-ko>4. Claude Code &times; MCP</h2>
+<h2 lang-en>4. Claude Code &times; MCP</h2>
+
+<h3 lang-ko>일반 MCP 서버 연결</h3>
+<h3 lang-en>Connecting Any MCP Server</h3>
+
+<p lang-ko>Claude Code는 MCP Client가 내장되어 있다. 명령 한 줄이면 어떤 MCP 서버든 등록할 수 있고, 세션에서 자연어로 도구를 호출한다.</p>
+<p lang-en>Claude Code has a built-in MCP Client. One command registers any MCP server, and you call tools via natural language in your session.</p>
+
+<pre><span class="cm"># MCP 서버 추가 (stdio transport)</span>
+<span class="kw">claude mcp add</span> --transport stdio <span class="st">[name]</span> -- /path/to/server-binary [args...]
+
+<span class="cm"># 등록된 서버 확인</span>
+<span class="kw">claude mcp list</span></pre>
+
+<p lang-ko><code>~/.claude/settings.json</code> 또는 프로젝트 <code>.claude/settings.local.json</code>에서 관리한다.</p>
+<p lang-en>Managed in <code>~/.claude/settings.json</code> or project-level <code>.claude/settings.local.json</code>.</p>
+
+<pre><span class="cm">// settings.json 예시 — Filesystem 서버</span>
+{
+  <span class="st">"mcpServers"</span>: {
+    <span class="st">"filesystem"</span>: {
+      <span class="st">"command"</span>: <span class="st">"npx"</span>,
+      <span class="st">"args"</span>: [<span class="st">"-y"</span>, <span class="st">"@anthropic/mcp-filesystem"</span>, <span class="st">"/allowed/path"</span>],
+      <span class="st">"transport"</span>: <span class="st">"stdio"</span>
+    }
+  }
+}</pre>
+
+<h3 lang-ko>MATLAB MCP 서버 연결</h3>
+<h3 lang-en>Connecting MATLAB MCP Server</h3>
+
+<p lang-ko>일반 MCP 연결과 동일한 방식으로 MATLAB을 등록한다. 이후 Claude Code 세션에서 자연어로 MATLAB 코드 실행, 분석, 테스트를 요청할 수 있다.</p>
+<p lang-en>Register MATLAB the same way as any MCP server. Then request MATLAB code execution, analysis, and testing via natural language in your Claude Code session.</p>
+
+<pre><span class="cm"># MATLAB MCP 서버 등록</span>
+<span class="kw">claude mcp add</span> --transport stdio <span class="st">matlab</span> -- /path/to/matlab-mcp-core-server \
+  --initialize-matlab-on-startup true
+
+<span class="cm"># 이후 세션에서:</span>
+<span class="cm"># "이 .m 파일 코드 리뷰해줘" → check_matlab_code 자동 호출</span>
+<span class="cm"># "FFT 결과 플롯해줘" → evaluate_matlab_code 자동 호출</span></pre>
+
+<div class="diagram-wrap">
+<svg width="100%" viewBox="0 0 780 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#888780" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+  </defs>
+  <rect x="30" y="30" width="180" height="120" rx="10" fill="#1E1E2E" stroke="#444441" stroke-width="1"/>
+  <text x="120" y="55" text-anchor="middle" font-size="11" fill="#CDD6F4" font-weight="700">Claude Code (CLI)</text>
+  <text x="120" y="78" text-anchor="middle" font-size="10" fill="#A6E3A1">&gt; claude</text>
+  <text x="120" y="98" text-anchor="middle" font-size="9" fill="#6C7086" lang-ko>MCP Client 내장</text>
+  <text x="120" y="98" text-anchor="middle" font-size="9" fill="#6C7086" lang-en>Built-in MCP Client</text>
+  <text x="120" y="118" text-anchor="middle" font-size="9" fill="#6C7086">settings.json</text>
+  <text x="120" y="138" text-anchor="middle" font-size="9" fill="#89DCEB">stdio</text>
+  <line x1="210" y1="70" x2="280" y2="50" stroke="#D3D1C7" stroke-width="1" marker-end="url(#arr2)"/>
+  <line x1="210" y1="90" x2="280" y2="90" stroke="#D3D1C7" stroke-width="1" marker-end="url(#arr2)"/>
+  <line x1="210" y1="110" x2="280" y2="130" stroke="#D3D1C7" stroke-width="1" marker-end="url(#arr2)"/>
+  <rect x="282" y="25" width="220" height="42" rx="8" fill="#E6F1FB" stroke="#85B7EB" stroke-width="1"/>
+  <text x="392" y="44" text-anchor="middle" font-size="10" fill="#185FA5" font-weight="600">Filesystem &middot; Git &middot; DB</text>
+  <text x="392" y="60" text-anchor="middle" font-size="9" fill="#185FA5" lang-ko>일반 MCP 서버</text>
+  <text x="392" y="60" text-anchor="middle" font-size="9" fill="#185FA5" lang-en>General MCP Servers</text>
+  <rect x="282" y="75" width="220" height="32" rx="8" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/>
+  <text x="392" y="96" text-anchor="middle" font-size="10" fill="#BA7517" font-weight="700">MATLAB MCP Server</text>
+  <rect x="282" y="115" width="220" height="32" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1"/>
+  <text x="392" y="136" text-anchor="middle" font-size="10" fill="#64748B" font-weight="600" lang-ko>커스텀 MCP (Python/TS)</text>
+  <text x="392" y="136" text-anchor="middle" font-size="10" fill="#64748B" font-weight="600" lang-en>Custom MCP (Python/TS)</text>
+  <rect x="20" y="10" width="500" height="155" rx="14" fill="none" stroke="#D3D1C7" stroke-width="1" stroke-dasharray="6 3"/>
+  <text x="270" y="175" text-anchor="middle" font-size="10" fill="#888780" lang-ko>&#128187; 로컬 머신 (stdio)</text>
+  <text x="270" y="175" text-anchor="middle" font-size="10" fill="#888780" lang-en>&#128187; Local machine (stdio)</text>
+  <rect x="560" y="40" width="190" height="80" rx="10" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1"/>
+  <text x="655" y="65" text-anchor="middle" font-size="10" fill="#64748B" font-weight="700">Remote (SSE)</text>
+  <text x="655" y="85" text-anchor="middle" font-size="9" fill="#64748B">Notion &middot; Slack &middot; Gmail</text>
+  <text x="655" y="100" text-anchor="middle" font-size="9" fill="#64748B">Figma &middot; Canva</text>
+  <line x1="502" y1="80" x2="558" y2="80" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#arr2)"/>
+</svg>
+  <div class="diagram-caption" lang-ko>Claude Code에서 일반 MCP + MATLAB MCP + 원격 서버 동시 연결</div>
+  <div class="diagram-caption" lang-en>Claude Code: general MCP + MATLAB MCP + remote servers simultaneously</div>
+</div>
+
+<div class="callout ok">
+  <span class="icon">&#9989;</span>
+  <p lang-ko><strong>Agentic 워크플로우:</strong> Claude Code가 MATLAB MCP를 통해 코드 작성 &rarr; 실행 &rarr; 결과 확인 &rarr; 수정을 자율적으로 반복한다. 일반 MCP 서버(파일, Git)와 MATLAB MCP를 동시에 사용해 완전한 개발 루프를 구성할 수 있다.</p>
+  <p lang-en><strong>Agentic workflow:</strong> Claude Code autonomously writes &rarr; executes &rarr; checks &rarr; iterates via MATLAB MCP. Combining general MCP servers (files, Git) with MATLAB MCP enables a complete development loop.</p>
+</div>
+
+<!-- ══ 5. MATLAB MCP 상세 ════════════════════════════════ -->
+<h2 lang-ko>5. MATLAB MCP Core Server 상세</h2>
+<h2 lang-en>5. MATLAB MCP Core Server Details</h2>
+
+<p lang-ko>MathWorks가 공식 제공하는 오픈소스 MCP 서버의 상세 사양이다. MATLAB R2020b 이상이 필요하며, Go 바이너리 또는 소스 빌드로 설치한다.</p>
+<p lang-en>Detailed specifications of MathWorks' official open-source MCP server. Requires MATLAB R2020b+, installed via Go binary or source build.</p>
+
+<h3 lang-ko>Resources (코딩 가이드)</h3>
+<h3 lang-en>Resources (Coding Guides)</h3>
+<div class="table-wrap"><table>
+  <thead><tr>
+    <th>Resource</th>
+    <th>URI</th>
+    <th lang-ko>내용</th><th lang-en>Content</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td>Coding Guidelines</td>
+      <td><code>guidelines://coding</code></td>
+      <td lang-ko>MATLAB 네이밍, 포맷, 성능 모범사례</td>
+      <td lang-en>MATLAB naming, formatting, performance best practices</td>
+    </tr>
+    <tr>
+      <td>Live Code Guidelines</td>
+      <td><code>guidelines://plain-text-live-code</code></td>
+      <td lang-ko>Live Script 생성 규칙 (R2025a+)</td>
+      <td lang-en>Live Script generation rules (R2025a+)</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<h3 lang-ko>설정 옵션</h3>
+<h3 lang-en>Configuration Options</h3>
+<div class="table-wrap"><table>
+  <thead><tr>
+    <th lang-ko>인자</th><th lang-en>Argument</th>
+    <th lang-ko>용도</th><th lang-en>Purpose</th>
+  </tr></thead>
+  <tbody>
+    <tr><td><code>--matlab-root</code></td><td lang-ko>MATLAB 설치 경로 지정</td><td lang-en>Specify MATLAB installation path</td></tr>
+    <tr><td><code>--initialize-matlab-on-startup</code></td><td lang-ko>세션 시작 시 MATLAB 즉시 실행</td><td lang-en>Start MATLAB immediately on session start</td></tr>
+    <tr><td><code>--initial-working-folder</code></td><td lang-ko>MATLAB 시작 디렉토리 설정</td><td lang-en>Set MATLAB's starting directory</td></tr>
+    <tr><td><code>--matlab-display-mode</code></td><td lang-ko>데스크톱 표시 여부 (<code>desktop</code> / <code>nodesktop</code>)</td><td lang-en>Desktop visibility (<code>desktop</code> / <code>nodesktop</code>)</td></tr>
+  </tbody>
+</table></div>
 
 <!-- ══ 6. LightHarness + MCP ═════════════════════════════ -->
 <h2 lang-ko>6. LightHarness &times; MCP</h2>
