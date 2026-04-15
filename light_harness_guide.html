@@ -1165,7 +1165,11 @@ function setLang(lang) {
   document.body.className = 'lang-' + lang;
   document.getElementById('btn-ko').classList.toggle('active', lang === 'ko');
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  try { localStorage.setItem('guide-lang', lang); } catch {}
 }
+(function() {
+  try { var s = localStorage.getItem('guide-lang'); if (s) setLang(s); } catch {}
+})();
 window.addEventListener('beforeprint', () => { document.fonts.ready; });
 </script>
 </body>

@@ -379,8 +379,8 @@
 <h3 lang-ko>MATLAB MCP Core Server</h3>
 <h3 lang-en>MATLAB MCP Core Server</h3>
 
-<p lang-ko>위 생태계 중 컴퓨팅 영역의 대표 사례로, MathWorks가 공식 제공하는 오픈소스 MCP 서버다. 로컬 MATLAB을 AI 에이전트가 직접 제어할 수 있다.</p>
-<p lang-en>A standout example in the Compute category &mdash; an official open-source MCP server from MathWorks that lets AI agents directly control your local MATLAB installation.</p>
+<p lang-ko>현재 관심있게 보고 있는 MCP 서버 중 하나로, MathWorks가 공식 제공하는 오픈소스 MCP 서버다. 로컬 MATLAB을 AI 에이전트가 직접 제어할 수 있다.</p>
+<p lang-en>One of the MCP servers we're currently exploring &mdash; an official open-source server from MathWorks that lets AI agents directly control your local MATLAB installation.</p>
 
 <div class="table-wrap"><table>
   <thead><tr>
@@ -653,7 +653,11 @@ function setLang(lang) {
   document.body.className = 'lang-' + lang;
   document.getElementById('btn-ko').classList.toggle('active', lang === 'ko');
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  try { localStorage.setItem('guide-lang', lang); } catch {}
 }
+(function() {
+  try { var s = localStorage.getItem('guide-lang'); if (s) setLang(s); } catch {}
+})();
 window.addEventListener('beforeprint', () => { document.fonts.ready; });
 </script>
 </body>
