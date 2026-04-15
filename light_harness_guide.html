@@ -340,6 +340,24 @@
     margin-bottom: 6px;
   }
 
+  /* ── Nav link ── */
+  .doc-nav {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    font-size: 12.5px;
+  }
+  .doc-nav a {
+    color: var(--purple);
+    text-decoration: none;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .doc-nav a:hover { background: var(--purple-l); border-color: var(--purple); }
+  .doc-nav a.current { background: var(--purple); color: white; border-color: var(--purple); pointer-events: none; }
+
   /* ── Footer ── */
   .doc-footer {
     border-top: 1px solid var(--border);
@@ -469,6 +487,13 @@
     <span class="meta-tag" lang-ko>Claude Pro 기반</span>
     <span class="meta-tag" lang-en>Built for Claude Pro</span>
   </div>
+</div>
+
+<div class="doc-nav">
+  <a href="agentic_ai_intro.html" lang-ko>Agentic AI 개념 가이드</a>
+  <a href="agentic_ai_intro.html" lang-en>Agentic AI Concept Guide</a>
+  <a href="light_harness_guide.html" class="current" lang-ko>운영 가이드 (현재)</a>
+  <a href="light_harness_guide.html" class="current" lang-en>Operational Guide (current)</a>
 </div>
 
 <!-- ══ 1. Overview ══════════════════════════════════════════ -->
@@ -1127,8 +1152,7 @@
 
 <!-- ══ Footer ══════════════════════════════════════════════ -->
 <div class="doc-footer">
-  <span lang-ko>LightHarness — 4-Tier 에이전트 오케스트레이터</span>
-  <span lang-en>LightHarness — 4-Tier Agent Orchestrator</span>
+  <span><a href="agentic_ai_intro.html" lang-ko>&larr; Agentic AI 개념 가이드</a><a href="agentic_ai_intro.html" lang-en>&larr; Agentic AI Concept Guide</a></span>
   <span>Updated 2026-04-15</span>
 </div>
 

@@ -316,6 +316,24 @@
     border-radius: 10px;
   }
 
+  /* ── Nav link ── */
+  .doc-nav {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    font-size: 12.5px;
+  }
+  .doc-nav a {
+    color: var(--purple);
+    text-decoration: none;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .doc-nav a:hover { background: var(--purple-l); border-color: var(--purple); }
+  .doc-nav a.current { background: var(--purple); color: white; border-color: var(--purple); pointer-events: none; }
+
   /* ── Footer ── */
   .doc-footer {
     border-top: 1px solid var(--border);
@@ -408,6 +426,13 @@
     <span class="meta-tag" lang-ko>실측 데이터 포함</span>
     <span class="meta-tag" lang-en>With Real Metrics</span>
   </div>
+</div>
+
+<div class="doc-nav">
+  <a href="agentic_ai_intro.html" class="current" lang-ko>개념 가이드 (현재)</a>
+  <a href="agentic_ai_intro.html" class="current" lang-en>Concept Guide (current)</a>
+  <a href="light_harness_guide.html" lang-ko>LightHarness 운영 가이드</a>
+  <a href="light_harness_guide.html" lang-en>LightHarness Operational Guide</a>
 </div>
 
 <!-- ══ 1. What is Agentic AI? ═════════════════════════════ -->
