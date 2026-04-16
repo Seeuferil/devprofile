@@ -584,12 +584,14 @@
   <text x="410" y="48" text-anchor="middle" font-size="10" fill="white" font-weight="600">/harness-debug</text>
   <rect x="478" y="32" width="80" height="24" rx="5" fill="#534AB7"/>
   <text x="518" y="48" text-anchor="middle" font-size="10" fill="white" font-weight="600">/inspect</text>
-  <rect x="568" y="32" width="60" height="24" rx="5" fill="#534AB7"/>
-  <text x="598" y="48" text-anchor="middle" font-size="10" fill="white" font-weight="600">/maf</text>
-  <rect x="638" y="32" width="60" height="24" rx="5" fill="#534AB7"/>
-  <text x="668" y="48" text-anchor="middle" font-size="10" fill="white" font-weight="600">/rsm</text>
-  <rect x="708" y="32" width="54" height="24" rx="5" fill="#534AB7"/>
-  <text x="735" y="48" text-anchor="middle" font-size="10" fill="white" font-weight="600">/rsml</text>
+  <rect x="568" y="32" width="44" height="24" rx="5" fill="#534AB7"/>
+  <text x="590" y="48" text-anchor="middle" font-size="10" fill="white" font-weight="600">/ci</text>
+  <rect x="620" y="32" width="54" height="24" rx="5" fill="#534AB7"/>
+  <text x="647" y="48" text-anchor="middle" font-size="10" fill="white" font-weight="600">/maf</text>
+  <rect x="682" y="32" width="42" height="24" rx="5" fill="#534AB7"/>
+  <text x="703" y="48" text-anchor="middle" font-size="10" fill="white" font-weight="600">/rsm</text>
+  <rect x="732" y="32" width="32" height="24" rx="5" fill="#534AB7"/>
+  <text x="748" y="48" text-anchor="middle" font-size="9" fill="white" font-weight="600">/rsml</text>
 
   <!-- Arrows down -->
   <line x1="200" y1="62" x2="200" y2="88" stroke="#D3D1C7" stroke-width="1" marker-end="url(#arr)"/>
@@ -665,8 +667,11 @@
       <td lang-ko>읽기 전용 13카테고리 감사. CRITICAL 발견 시 autodebug 자동 연계</td>
       <td lang-en>Read-only 13-category audit. Auto-launches autodebug on CRITICAL.</td></tr>
     <tr><td><code>/autodebug [target]</code></td>
-      <td lang-ko>런타임 디버그 루프: Audit → Fix → Deploy → Verify (백그라운드)</td>
-      <td lang-en>Runtime debug loop: Audit → Fix → Deploy → Verify (background)</td></tr>
+      <td lang-ko>런타임 디버그 루프: Audit → Fix → Deploy → Verify (백그라운드, 최대 5라운드)</td>
+      <td lang-en>Runtime debug loop: Audit → Fix → Deploy → Verify (background, max 5 rounds)</td></tr>
+    <tr><td><code>/ci [target]</code></td>
+      <td lang-ko>지속적 개선: 3-Tier로 스캔 → 평가 → 리포트 → <code>/harness</code> Blueprint 자동 생성</td>
+      <td lang-en>Continuous Improvement: 3-Tier scan → assess → report → auto-generate <code>/harness</code> Blueprint</td></tr>
     <tr><td><code>/simplify</code></td>
       <td lang-ko>변경된 코드의 재사용성·품질·효율성 리뷰 후 자동 수정</td>
       <td lang-en>Review changed code for reuse, quality, efficiency — then fix</td></tr>
@@ -1038,6 +1043,130 @@
   </div>
 </div>
 
+<!-- ══ 7b. autodebug ═════════════════════════════════════ -->
+<h3 lang-ko>autodebug — 자율 디버그 루프</h3>
+<h3 lang-en>autodebug — Autonomous Debug Loop</h3>
+<p lang-ko><code>/inspect</code>가 CRITICAL을 발견하면 자동 연계되거나, 직접 <code>/autodebug [target]</code>으로 실행. 백그라운드에서 성공 조건 달성까지 반복한다.</p>
+<p lang-en>Auto-triggered when <code>/inspect</code> finds CRITICAL issues, or invoked directly via <code>/autodebug [target]</code>. Runs in background until success condition is met.</p>
+
+<div class="pipeline">
+  <div class="pipe-card local">
+    <div class="step-num">1</div>
+    <div class="step-name">Audit</div>
+    <div class="step-desc"><span class="badge local">T2/T3</span><br>
+      <span lang-ko>CRITICAL 버그 탐지</span>
+      <span lang-en>Detect CRITICAL bugs</span>
+    </div>
+  </div>
+  <div class="pipe-card cloud">
+    <div class="step-num">2</div>
+    <div class="step-name">Fix</div>
+    <div class="step-desc"><span class="badge cloud">cloud</span><br>
+      <span lang-ko>코드 수정</span>
+      <span lang-en>Patch code</span>
+    </div>
+  </div>
+  <div class="pipe-card local">
+    <div class="step-num">3</div>
+    <div class="step-name">Deploy</div>
+    <div class="step-desc"><span class="badge local">bash</span><br>
+      <span lang-ko>빌드 + 배포</span>
+      <span lang-en>Build + deploy</span>
+    </div>
+  </div>
+  <div class="pipe-card local">
+    <div class="step-num">4</div>
+    <div class="step-name">Verify</div>
+    <div class="step-desc"><span class="badge local">T2/T3</span><br>
+      <span lang-ko>성공? 종료 : 1번으로</span>
+      <span lang-en>Pass? Done : goto 1</span>
+    </div>
+  </div>
+</div>
+
+<div class="callout warn">
+  <span class="icon">&#9888;&#65039;</span>
+  <p lang-ko><strong>최대 5라운드.</strong> 3라운드 이내 수렴이 일반적. 라운드당 cloud 1회 = 최대 cloud 5회. 실패 시 사용자에게 보고.</p>
+  <p lang-en><strong>Max 5 rounds.</strong> Typically converges within 3. 1 cloud step/round = max 5 cloud steps. Reports to user on failure.</p>
+</div>
+
+<!-- ══ 7c. CI ════════════════════════════════════════════ -->
+<h3 lang-ko>/ci — 지속적 개선 에이전트</h3>
+<h3 lang-en>/ci — Continuous Improvement Agent</h3>
+<p lang-ko>디버깅이 아닌 <strong>개선</strong>에 특화. 프로젝트를 스캔해 불필요 코드, 중복, 성능 병목을 찾고, <code>/harness</code> Blueprint를 자동 생성한다. 실제 적용은 사용자가 <code>/harness-run</code>으로 나중에 수행.</p>
+<p lang-en>Specialized in <strong>improvement</strong>, not debugging. Scans projects for dead weight, redundancy, and perf bottlenecks, then auto-generates a <code>/harness</code> Blueprint. User applies later via <code>/harness-run</code>.</p>
+
+<div class="pipeline">
+  <div class="pipe-card local">
+    <div class="step-num">1</div>
+    <div class="step-name">Scan</div>
+    <div class="step-desc"><span class="badge local">Tier 3</span><br>
+      <span lang-ko>구조·의존성 분석</span>
+      <span lang-en>Structure + deps</span>
+    </div>
+  </div>
+  <div class="pipe-card local">
+    <div class="step-num">2</div>
+    <div class="step-name">Assess</div>
+    <div class="step-desc"><span class="badge local">Tier 2</span><br>
+      <span lang-ko>7가지 기준 평가</span>
+      <span lang-en>7-criteria eval</span>
+    </div>
+  </div>
+  <div class="pipe-card cloud">
+    <div class="step-num">3</div>
+    <div class="step-name">Report</div>
+    <div class="step-desc"><span class="badge cloud">Claude</span><br>
+      <span lang-ko>종합 + 우선순위</span>
+      <span lang-en>Synthesize + rank</span>
+    </div>
+  </div>
+  <div class="pipe-card local">
+    <div class="step-num">4</div>
+    <div class="step-name">Blueprint</div>
+    <div class="step-desc"><span class="badge local">/harness</span><br>
+      <span lang-ko>실행 계획 생성</span>
+      <span lang-en>Generate plan</span>
+    </div>
+  </div>
+</div>
+
+<div class="table-wrap"><table>
+  <thead><tr>
+    <th lang-ko>평가 카테고리</th><th lang-en>Assessment Category</th>
+    <th lang-ko>대상</th><th lang-en>What to Find</th>
+  </tr></thead>
+  <tbody>
+    <tr><td><strong>P-1</strong> Dead Weight</td>
+      <td lang-ko>미사용 의존성, 고아 파일, 죽은 export</td>
+      <td lang-en>Unused deps, orphan files, dead exports</td></tr>
+    <tr><td><strong>P-2</strong> Redundancy</td>
+      <td lang-ko>중복 로직, 복사-붙여넣기, 겹치는 헬퍼</td>
+      <td lang-en>Duplicate logic, copy-paste, overlapping helpers</td></tr>
+    <tr><td><strong>P-3</strong> Compactness</td>
+      <td lang-ko>과도한 추상화, 불필요한 래퍼</td>
+      <td lang-en>Over-abstraction, unnecessary wrappers</td></tr>
+    <tr><td><strong>P-4</strong> Performance</td>
+      <td lang-ko>느린 경로, N+1, 캐시 누락</td>
+      <td lang-en>Slow paths, N+1, missing cache</td></tr>
+    <tr><td><strong>P-5</strong> Procedure</td>
+      <td lang-ko>워크플로우 위반, 일관성 없는 패턴</td>
+      <td lang-en>Workflow violations, inconsistent patterns</td></tr>
+    <tr><td><strong>P-6</strong> Dependency</td>
+      <td lang-ko>과대 의존성, stdlib로 대체 가능</td>
+      <td lang-en>Oversized deps replaceable by stdlib</td></tr>
+    <tr><td><strong>P-7</strong> Structure</td>
+      <td lang-ko>잘못된 위치, 순환 임포트</td>
+      <td lang-en>Misplaced files, circular imports</td></tr>
+  </tbody>
+</table></div>
+
+<div class="callout info">
+  <span class="icon">&#128161;</span>
+  <p lang-ko><strong>/ci vs /inspect:</strong> <code>/inspect</code>는 <em>버그</em>를 찾고, <code>/ci</code>는 <em>개선점</em>을 찾는다. 버그가 없어도 코드는 더 좋아질 수 있다. <code>/ci</code>의 철학: "모든 줄은 자신의 존재를 증명해야 한다."</p>
+  <p lang-en><strong>/ci vs /inspect:</strong> <code>/inspect</code> finds <em>bugs</em>; <code>/ci</code> finds <em>improvements</em>. Code can get better even without bugs. <code>/ci</code>'s philosophy: "Every line must earn its place."</p>
+</div>
+
 <!-- ══ 8. Blueprint Lint ══════════════════════════════════ -->
 <h2 lang-ko>8. Blueprint Lint</h2>
 <h2 lang-en>8. Blueprint Lint</h2>
@@ -1143,6 +1272,13 @@
       <td lang-en>Vendored package 13-category audit</td>
       <td>0 / 10</td>
     </tr>
+    <tr>
+      <td>04-16</td>
+      <td><code>autodebug on autotrade-bot DT</code></td>
+      <td lang-ko>DT 중복 포지션 + sell 실패 자동 수정·배포·검증</td>
+      <td lang-en>DT duplicate position + sell failure auto-fix, deploy, verify</td>
+      <td>1 / 10</td>
+    </tr>
   </tbody>
 </table>
 
@@ -1155,7 +1291,7 @@
 <!-- ══ Footer ══════════════════════════════════════════════ -->
 <div class="doc-footer">
   <span><a href="agentic_ai_intro.html" lang-ko>&larr; Agentic AI 개념</a><a href="agentic_ai_intro.html" lang-en>&larr; Agentic AI Concepts</a> &middot; <a href="mcp_ecosystem.html" lang-ko>MCP 생태계</a><a href="mcp_ecosystem.html" lang-en>MCP Ecosystem</a></span>
-  <span>Updated 2026-04-15</span>
+  <span>Updated 2026-04-16</span>
 </div>
 
 </div><!-- .page -->

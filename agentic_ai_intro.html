@@ -139,7 +139,7 @@
   <div class="subtitle" lang-ko>AI의 진화, Agentic AI의 핵심 원리, 그리고 실무 적용</div>
   <div class="subtitle" lang-en>The Evolution of AI, Core Principles of Agentic AI, and Practical Applications</div>
   <div class="meta">
-    <span class="meta-tag">2026-04-15</span>
+    <span class="meta-tag">2026-04-16</span>
     <span class="meta-tag" lang-ko>개념 가이드</span>
     <span class="meta-tag" lang-en>Conceptual Guide</span>
   </div>
@@ -459,6 +459,18 @@
       <td>Claude Code, Cursor, Copilot</td>
     </tr>
     <tr>
+      <td lang-ko><strong>자율 디버깅</strong></td><td lang-en><strong>Autonomous Debugging</strong></td>
+      <td lang-ko>에러 감지 &rarr; 원인 분석 &rarr; 코드 수정 &rarr; 배포 &rarr; 검증을 성공까지 반복</td>
+      <td lang-en>Detect error &rarr; analyze root cause &rarr; patch &rarr; deploy &rarr; verify, loops until success</td>
+      <td><code>/autodebug</code>, <code>/inspect</code></td>
+    </tr>
+    <tr>
+      <td lang-ko><strong>지속적 개선</strong></td><td lang-en><strong>Continuous Improvement</strong></td>
+      <td lang-ko>프로젝트를 스캔해 불필요 코드·중복·성능 병목을 찾고, 개선 Blueprint를 자동 생성</td>
+      <td lang-en>Scans projects for dead weight, redundancy, and perf bottlenecks; auto-generates improvement Blueprints</td>
+      <td><code>/ci</code>, <code>/harness</code></td>
+    </tr>
+    <tr>
       <td lang-ko><strong>데이터 분석</strong></td><td lang-en><strong>Data Analysis</strong></td>
       <td lang-ko>데이터 탐색 &rarr; 시각화 &rarr; 인사이트 도출을 반복</td>
       <td lang-en>Iterates: data exploration &rarr; visualization &rarr; insight extraction</td>
@@ -484,6 +496,72 @@
     </tr>
   </tbody>
 </table></div>
+
+<h3 lang-ko>실전 에이전트 루프 예시: /autodebug</h3>
+<h3 lang-en>Real Agent Loop Example: /autodebug</h3>
+
+<div class="flow-steps">
+  <div class="flow-step observe">
+    <div class="step-label">Step 1</div>
+    <div class="step-title">Audit</div>
+    <div class="step-desc" lang-ko>13카테고리로 버그 탐지<br><span class="badge local">Tier 2/3</span></div>
+    <div class="step-desc" lang-en>Detect bugs via 13 categories<br><span class="badge local">Tier 2/3</span></div>
+  </div>
+  <div class="flow-step exec">
+    <div class="step-label">Step 2</div>
+    <div class="step-title">Fix</div>
+    <div class="step-desc" lang-ko>CRITICAL 코드 수정<br><span class="badge cloud">Claude</span></div>
+    <div class="step-desc" lang-en>Patch CRITICAL code<br><span class="badge cloud">Claude</span></div>
+  </div>
+  <div class="flow-step plan">
+    <div class="step-label">Step 3</div>
+    <div class="step-title">Deploy</div>
+    <div class="step-desc" lang-ko>변경 배포 + 빌드 확인</div>
+    <div class="step-desc" lang-en>Push changes + verify build</div>
+  </div>
+  <div class="flow-step review">
+    <div class="step-label">Step 4</div>
+    <div class="step-title">Verify</div>
+    <div class="step-desc" lang-ko>CRITICAL=0? 완료 : Step 1<br><span lang-ko>최대 5라운드</span></div>
+    <div class="step-desc" lang-en>CRITICAL=0? Done : Step 1<br>Max 5 rounds</div>
+  </div>
+</div>
+
+<h3 lang-ko>실전 에이전트 루프 예시: /ci (Continuous Improvement)</h3>
+<h3 lang-en>Real Agent Loop Example: /ci (Continuous Improvement)</h3>
+
+<div class="flow-steps">
+  <div class="flow-step observe">
+    <div class="step-label">Step 1</div>
+    <div class="step-title">Scan</div>
+    <div class="step-desc" lang-ko>프로젝트 구조·의존성 분석<br><span class="badge local">Tier 3</span></div>
+    <div class="step-desc" lang-en>Analyze structure + deps<br><span class="badge local">Tier 3</span></div>
+  </div>
+  <div class="flow-step plan">
+    <div class="step-label">Step 2</div>
+    <div class="step-title">Assess</div>
+    <div class="step-desc" lang-ko>7가지 기준으로 개선점 평가<br><span class="badge local">Tier 2</span></div>
+    <div class="step-desc" lang-en>Evaluate against 7 criteria<br><span class="badge local">Tier 2</span></div>
+  </div>
+  <div class="flow-step exec">
+    <div class="step-label">Step 3</div>
+    <div class="step-title">Report</div>
+    <div class="step-desc" lang-ko>영향도 순 랭킹 + 요약<br><span class="badge cloud">Claude</span></div>
+    <div class="step-desc" lang-en>Rank by impact + summarize<br><span class="badge cloud">Claude</span></div>
+  </div>
+  <div class="flow-step review">
+    <div class="step-label">Step 4</div>
+    <div class="step-title">Blueprint</div>
+    <div class="step-desc" lang-ko>/harness로 실행 계획 생성<br><span lang-ko>나중에 적용</span></div>
+    <div class="step-desc" lang-en>Generate plan via /harness<br>Apply later</div>
+  </div>
+</div>
+
+<div class="callout ok">
+  <span class="icon">&#9989;</span>
+  <p lang-ko><strong>핵심:</strong> 두 에이전트 모두 <strong>3-Tier 라우팅</strong>으로 비용을 최소화한다. 무거운 분석은 Gemini/Groq에 위임, Claude는 판단과 코드 수정만 담당. <a href="light_harness_guide.html">LightHarness 운영 가이드</a>에서 상세 구조 확인.</p>
+  <p lang-en><strong>Key:</strong> Both agents minimize cost via <strong>3-Tier routing</strong>. Heavy analysis delegated to Gemini/Groq; Claude handles judgment and code changes only. See <a href="light_harness_guide.html">LightHarness Operations Guide</a> for details.</p>
+</div>
 
 <!-- ══ 8. 다음 단계 ══════════════════════════════════════ -->
 <h2 lang-ko>8. 다음 단계</h2>
@@ -523,7 +601,7 @@
 
 <div class="doc-footer">
   <span><a href="mcp_ecosystem.html" lang-ko>MCP 생태계 &rarr;</a><a href="mcp_ecosystem.html" lang-en>MCP Ecosystem &rarr;</a> &middot; <a href="light_harness_guide.html" lang-ko>LightHarness 운영 &rarr;</a><a href="light_harness_guide.html" lang-en>LightHarness Operations &rarr;</a></span>
-  <span>Agentic AI Guide &middot; 2026-04-15</span>
+  <span>Agentic AI Guide &middot; 2026-04-16</span>
 </div>
 
 </div>
